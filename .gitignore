@@ -1,5 +1,5 @@
-rhd-env
-__pycache__
+*rhd-env
+*__pycache__
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
