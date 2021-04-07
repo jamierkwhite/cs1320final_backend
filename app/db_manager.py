@@ -36,8 +36,8 @@ class DB_Manager:
             father TEXT,
             mother TEXT,
             care_taker_phone VARCHAR(14),
-            alternate_phone VARCHAR(14)),
-            submitted_by TEXT'''
+            alternate_phone VARCHAR(14),
+            submitted_by TEXT)'''
         self.cursor.execute(query)
         self.conn.commit()
 
@@ -55,6 +55,7 @@ class DB_Manager:
             mitral_regurgitation FLOAT,
             aortic_regurgitation BOOL,
             comments TEXT,
+            submitted_by TEXT,
             FOREIGN KEY (id) REFERENCES Registration(id))'''
         self.cursor.execute(query)
         self.conn.commit()
@@ -67,6 +68,7 @@ class DB_Manager:
             poor_pcn_reaction BOOL,
             injection_given BOOL,
             comments TEXT,
+            submitted_by TEXT,
             FOREIGN KEY (id) REFERENCES Registration(id))'''        
         self.cursor.execute(query)
         self.conn.commit()
