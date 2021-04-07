@@ -73,6 +73,16 @@ class DB_Manager:
         self.cursor.execute(query)
         self.conn.commit()
 
+
+        query = """CREATE TABLE IF NOT EXISTS users(
+            userID TEXT PRIMARY KEY,
+            pwHash TEXT UNIQUE
+            )
+        """
+        self.cursor.execute(query)
+        self.conn.commit()
+        
+
         query = """CREATE TABLE IF NOT EXISTS sessions(
             sessionID TEXT PRIMARY KEY,
             userID TEXT,
@@ -86,19 +96,6 @@ class DB_Manager:
         self.cursor.execute(query)
         self.conn.commit()
 
-        query = """CREATE TABLE IF NOT EXISTS users(
-            userID TEXT PRIMARY KEY,
-            pwHash TEXT UNIQUE
-            )
-        """
-        self.cursor.execute(query)
-        self.conn.commit()
-
-        query = '''CREATE TABLE IF NOT EXISTS auth(
-            username TEXT PRIMARY KEY,
-            hash TEXT'''        
-        self.cursor.execute(query)
-        self.conn.commit()
 
     '''
     method to insert a new registrant into the database
