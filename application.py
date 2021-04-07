@@ -111,7 +111,10 @@ def submit_screening_echo():
         return Response(status=500)
     return Response(status=200)
 
-    
+@app.route('/favicon.ico', methods=['GET'])
+def icon():
+    return Response(status=501)
+
 def submit_screening_questions():
     return Response(status=501)
 
