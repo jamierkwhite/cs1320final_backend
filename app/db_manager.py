@@ -16,7 +16,6 @@ class DB_Manager:
 
         self.cursor = self.conn.cursor()
     
-    def init_db(self):
         query = '''CREATE TABLE IF NOT EXISTS Registration(
             id INT PRIMARY KEY,
             first_name TEXT,
