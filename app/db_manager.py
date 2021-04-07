@@ -74,21 +74,21 @@ class DB_Manager:
         self.conn.commit()
 
 
-        query = """CREATE TABLE IF NOT EXISTS users(
+        query = """CREATE TABLE IF NOT EXISTS members(
             userID TEXT PRIMARY KEY,
             pwHash TEXT UNIQUE
             )
         """
         self.cursor.execute(query)
         self.conn.commit()
-        
+
 
         query = """CREATE TABLE IF NOT EXISTS sessions(
             sessionID TEXT PRIMARY KEY,
             userID TEXT,
             expiration TEXT,
             FOREIGN KEY (userID)
-                REFERENCES users(userID)
+                REFERENCES members(userID)
                     ON DELETE CASCADE
                     ON UPDATE RESTRICT
         )
@@ -218,7 +218,7 @@ class DB_Manager:
     def login(self, userID, password):
         error = ""
         token = ""
-        q = "SELECT userID,pwHash FROM users WHERE userID=?"
+        q = "SELECT userID,pwHash FROM members WHERE userID=?"
         try:
             self.cursor.execute(q, (userID,))
             result = self.cursor.fetchone()
