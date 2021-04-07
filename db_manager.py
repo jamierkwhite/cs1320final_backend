@@ -1,4 +1,5 @@
 import psycopg2
+import os
 import random
 
 '''
@@ -10,14 +11,12 @@ class DB_Manager:
     '''
 
     def __init__(self):
-        self.conn = psycopg2.connect(database='scappdb',
-                    user='postgres',
-                    password='jvjye4b66k9ermx7',
-                    host='localhost',
-                    port='5432')
+        DATABASE_URL = os.environ['DATABASE_URL']
+        self.conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 
         self.cursor = self.conn.cursor()
-
+    
+    def init_db(self):
         query = '''CREATE TABLE IF NOT EXISTS Registration(
             id INT PRIMARY KEY,
             first_name TEXT,
