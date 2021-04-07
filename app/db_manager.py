@@ -74,7 +74,7 @@ class DB_Manager:
         self.conn.commit()
 
 
-        query = """CREATE TABLE IF NOT EXISTS members(
+        query = """CREATE TABLE IF NOT EXISTS screeners(
             userID TEXT PRIMARY KEY,
             pwHash TEXT UNIQUE
             )
@@ -88,7 +88,7 @@ class DB_Manager:
             userID TEXT,
             expiration TEXT,
             FOREIGN KEY (userID)
-                REFERENCES members(userID)
+                REFERENCES screeners(userID)
                     ON DELETE CASCADE
                     ON UPDATE RESTRICT
         )
@@ -218,7 +218,7 @@ class DB_Manager:
     def login(self, userID, password):
         error = ""
         token = ""
-        q = "SELECT userID,pwHash FROM members WHERE userID=?"
+        q = "SELECT userID,pwHash FROM screeners WHERE userID=?"
         try:
             self.cursor.execute(q, (userID,))
             result = self.cursor.fetchone()
