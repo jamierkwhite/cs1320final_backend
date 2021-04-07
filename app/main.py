@@ -1,12 +1,11 @@
 from flask import Flask, request, Response
 from app.db_manager import DB_Manager
+import json
 
 
 app = Flask(__name__)
 db = DB_Manager()
 
-def verify_token(token):
-    pass
 
 @app.route('/')
 def default():
@@ -35,7 +34,8 @@ returns: a new generated id
 @app.route('/register', methods=['POST'])
 def submit_reg():
     token = request.form['token']
-    if not verify_token(token):
+    valid, user = db.validate_tokenverify_token(token)
+    if not valid:
         return Response(status=401)
     mandatory_items = ['first_name', 'last_name']
     optional_items = [
@@ -56,17 +56,23 @@ def submit_reg():
              'consent_url',
              'pcn_consent_url']
     reg_info = build_info(request.form, mandatory_items, optional_items)
-    reg_info['id'] = db.gen_id()
     if not reg_info:
         return Response(status=402)
+    reg_info['id'] = db.gen_id()
+    reg_info['submitted_by'] = user
     if not db.submit_registration(reg_info):
         return Response(status=500)
     return Response(status=200)
     
 
-
+@app.route('/login', methods=['POST'])
 def login():
-    return Response(status=501)
+    username = request.form['username']
+    pw = request.form['password']
+    token, error = db.login(username, pw)
+    if error:
+        return Response(status=401)
+    return Response(response=json.dumps({'token':token}), status=200)
 
 
 '''
@@ -88,7 +94,8 @@ required: id
 @app.route('/screening_echo', methods=['POST'])
 def submit_screening_echo():
     token = request.form['token']
-    if not verify_token(token):
+    valid, user = db.validate_tokenverify_token(token)
+    if not valid:
         return Response(status=401)
     mandatory_items = [ 'id',
                         'date',
@@ -107,6 +114,7 @@ def submit_screening_echo():
     reg_info = build_info(request.form, mandatory_items, optional_items)
     if not reg_info:
         return Response(status=402)
+    reg_info['submitted_by'] = user
     if not db.submit_screening_echo(reg_info):
         return Response(status=500)
     return Response(status=200)
@@ -114,6 +122,7 @@ def submit_screening_echo():
 @app.route('/favicon.ico', methods=['GET'])
 def icon():
     return Response(status=404)
+
 
 def submit_screening_questions():
     return Response(status=501)

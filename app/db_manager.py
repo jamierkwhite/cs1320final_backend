@@ -1,6 +1,10 @@
 import psycopg2
 import os
 import random
+import hashlib
+import datetime
+import bcrypt
+import base64
 
 '''
 Class to interface with the database
@@ -32,7 +36,8 @@ class DB_Manager:
             father TEXT,
             mother TEXT,
             care_taker_phone VARCHAR(14),
-            alternate_phone VARCHAR(14))'''
+            alternate_phone VARCHAR(14)),
+            submitted_by TEXT'''
         self.cursor.execute(query)
         self.conn.commit()
 
@@ -66,6 +71,33 @@ class DB_Manager:
         self.cursor.execute(query)
         self.conn.commit()
 
+        query = """CREATE TABLE IF NOT EXISTS sessions(
+            sessionID TEXT PRIMARY KEY,
+            userID TEXT,
+            expiration TEXT,
+            FOREIGN KEY (userID)
+                REFERENCES users(userID)
+                    ON DELETE CASCADE
+                    ON UPDATE RESTRICT
+        )
+        """    
+        self.cursor.execute(query)
+        self.conn.commit()
+
+        query = """CREATE TABLE IF NOT EXISTS users(
+            userID TEXT PRIMARY KEY,
+            pwHash TEXT UNIQUE
+            )
+        """
+        self.cursor.execute(query)
+        self.conn.commit()
+
+        query = '''CREATE TABLE IF NOT EXISTS auth(
+            username TEXT PRIMARY KEY,
+            hash TEXT'''        
+        self.cursor.execute(query)
+        self.conn.commit()
+
     '''
     method to insert a new registrant into the database
     params:
@@ -74,7 +106,7 @@ class DB_Manager:
     '''
     def submit_registration(self, reg_info):
         query = '''INSERT INTO Registration
-            VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'''
+            VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'''
         try:
             self.cursor.execute(query, 
                 reg_info["id"], (
@@ -95,7 +127,8 @@ class DB_Manager:
                 reg_info["alternate_phone"],
                 reg_info["headshot_url"],
                 reg_info["consent_url"],
-                reg_info["pcn_consent_url"]))
+                reg_info["pcn_consent_url"],
+                reg_info["submitted_by"]))
             self.conn.commit()
             return True
         except Exception:
@@ -126,7 +159,8 @@ class DB_Manager:
                  screening_echo['am_valve_leaflet_mobility_normality'],
                  screening_echo['mitral_regurgitation'],
                  screening_echo['aortic_regurgitation'],
-                 screening_echo['comments']))
+                 screening_echo['comments'],
+                 screening_echo['submitted_by']))
             self.conn.commit()
             return True
         except Exception:
@@ -155,9 +189,73 @@ class DB_Manager:
             if len(results) == 0:
                 return id
             
+    def validate_token(self, token):
+        is_valid = False
+        userID = ""
+        q = "SELECT * FROM sessions WHERE sessionID=?"
+        try:
+            hashed_token = get_hashed_token(token)
+            self.cursor.execute(q, (hashed_token,))
+            result = self.cursor.fetchone()
+            if (result == None):
+                return False, ""
+            else:
+                expiration = datetime.datetime.strptime(
+                    result[2], '%Y-%m-%d %H:%M:%S.%f')
+                now = datetime.datetime.now()
+                userID = result[1]
+                if (expiration > now):
+                    return True, userID
+
+        except:
+            return False, ""
+        return is_valid, userID
+
+
+    # Logs a client into the Dropbox system.
+    #
+    # Expected input: userID, password (in plaintext)
+    # Expected output: token, err
+    def login(self, userID, password):
+        error = ""
+        token = ""
+        q = "SELECT userID,pwHash FROM users WHERE userID=?"
+        try:
+            self.cursor.execute(q, (userID,))
+            result = self.cursor.fetchone()
+            if (result == None):
+                return token, "Could not find your Dropbox account."
+            pwHash = result[1]
+            if bcrypt.checkpw(password.encode("utf-8"), pwHash):
+                # generate a new sessionID token - see README for citation
+                token = base64.b64encode(os.urandom(16))
+                # hash the token before storing it in the db
+                sessionID = hashlib.sha256(token).hexdigest()
+                # set an expiration of the session to be 30 minutes from now
+                # see README for citation
+                now = datetime.datetime.now()
+                now_plus_30 = str(now + datetime.timedelta(minutes=240))
+                q = "INSERT INTO sessions (sessionID, userID, expiration) VALUES(?,?,?)"
+                self.cursor.execute(q, (sessionID, userID, now_plus_30))
+                self.conn.commit()
+            else:
+                error = "Could not find your Dropbox account."
+        except:
+            error = "There was an error logging in. Please try again."
+        return token, error
+
 
     def close(self):
         self.conn.close()
+
+# hashes a token
+#
+# Expected input:
+#   token: token to be hashed
+# Expected output: hash(token)
+def get_hashed_token(token):
+    encoded_token = str(token).encode()
+    return hashlib.sha256(encoded_token).hexdigest()
 
 
 if __name__ == '__main__':
