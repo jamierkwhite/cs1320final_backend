@@ -1,5 +1,5 @@
 from flask import Flask, request, Response
-from db_manager import DB_Manager
+from app.db_manager import DB_Manager
 
 
 app = Flask(__name__)
