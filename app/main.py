@@ -1,4 +1,4 @@
-from flask import Flask, request, Response
+from flask import Flask, request, Response, jsonify
 from app.db_manager import DB_Manager
 import json
 
@@ -128,8 +128,13 @@ def submit_screening_questions():
     return Response(status=501)
 
 
+@app.route('/find_patients', methods=['POST'])
 def find_patient():
-    return Response(status=501)
+    given_items = request.form
+    found = db.get_patients(given_items)
+    if found:
+        return jsonify(found)
+    return Response(status=404)
 
 '''
 verify that needed items are in a request and build an item for db

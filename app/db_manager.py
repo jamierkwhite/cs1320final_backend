@@ -184,6 +184,41 @@ class DB_Manager:
             if len(results) == 0:
                 return id
             
+    
+    def get_patients(self, given_info):
+        fields = [
+            'id',
+            'first_name',
+            'birth_date',
+            'age',
+            'school_name',
+            'standard',
+            'village',
+            'sub_county',
+            'church',
+            'childrens_Home',
+            'care_taker',
+            'father',
+            'mother',
+            'care_taker_phone',
+            'alternate_phone',
+            'headshot_url',
+            'consent_url',
+            'pcn_consent_url']
+
+        results = set()
+
+        for key in fields:
+            if key in given_info:
+                val = given_info[key]
+                query = 'SELECT FROM registration WHERE %s=%s'
+                self.cursor.execute(query, key, val) 
+                results = results.intersection(self.cursor.fetchall())
+                if len(results) <= 5 and len(results) > 0:
+                    return results
+        return False
+    
+    
     def validate_token(self, token):
         is_valid = False
         userID = ""
