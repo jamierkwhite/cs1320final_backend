@@ -1,11 +1,13 @@
 from flask import Flask, request, Response, jsonify
 from app.db_manager import DB_Manager
-import json
+import boto3, botocore
+
 
 
 app = Flask(__name__)
 db = DB_Manager()
-
+s3 = boto3.client('s3', aws_access_key_id='AKIAQQORPAYKZH4ZPNG4',
+   aws_secret_access_key='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')
 
 @app.route('/')
 def default():
@@ -33,6 +35,7 @@ returns: a new generated id
 '''
 @app.route('/register', methods=['POST'])
 def submit_reg():
+    bucket_name = 'rhdbucket'
     token = request.form['token']
     valid, user = db.validate_tokenverify_token(token)
     if not valid:
@@ -51,10 +54,34 @@ def submit_reg():
              'father',
              'mother',
              'care_taker_phone',
-             'alternate_phone',
-             'headshot_url',
-             'consent_url',
-             'pcn_consent_url']
+             'alternate_phone']
+
+    headshot = request.files['headshot']
+
+    if headshot.filename != '':
+        try:
+            s3.upload_fileobj(
+                headshot,
+                bucket_name,
+                headshot.filename
+            )
+
+        except Exception as e:
+            print("Error uploading headshot: ", e)
+            return e
+    consent = request.files['consent']
+    if consent.filename != '':
+        try:
+            s3.upload_fileobj(
+                consent,
+                bucket_name,
+                consent.filename
+            )
+
+        except Exception as e:
+            print("Error uploading consent: ", e)
+            return e
+
     reg_info = build_info(request.form, mandatory_items, optional_items)
     if not reg_info:
         return Response(status=402)
@@ -72,7 +99,7 @@ def login():
     token, error = db.login(username, pw)
     if error:
         return Response(status=401)
-    return Response(response=json.dumps({'token':token}), status=200)
+    return jsonify({'token': token})
 
 
 '''
