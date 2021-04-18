@@ -188,11 +188,11 @@ def build_info(form, mandatory_items, optional_items):
     for item in mandatory_items:
         if item not in form:
             return False
-        info[item] = form[item]
+        info[item] = form['patient_info'][item]
 
     for item in optional_items:
         if item in form:
-            info[item] = form[item]
+            info[item] = form['patient_info'][item]
     return info
 
 if __name__ == "__main__":
