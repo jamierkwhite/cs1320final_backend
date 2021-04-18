@@ -91,7 +91,6 @@ class DB_Manager:
         """    
         self.cursor.execute(query)
 
-        self.cursor.execute("INSERT INTO users VALUES('developer', '25675dbaad13335ee33e8e6203945e5aa860e7279f3f597a3651a993da4ab779');")
         self.conn.commit()
 
 
