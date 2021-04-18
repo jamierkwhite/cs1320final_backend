@@ -100,7 +100,7 @@ def login():
     token, error = db.login(username, pw)
     if error:
         return Response(status=401)
-    return jsonify({'token': str(token)})
+    return jsonify({'token': return jsonify({'token': token.decode('utf-8')})})
 
 
 '''
