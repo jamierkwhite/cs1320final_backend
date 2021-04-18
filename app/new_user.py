@@ -14,7 +14,7 @@ cursor.execute(q)
 q = "DROP TABLE screening CASCADE;"
 cursor.execute(q)
 
-q = "DROP TABLE cascade CASCADE;"
+q = "DROP TABLE PCN CASCADE;"
 cursor.execute(q)
 
 conn.commit()
