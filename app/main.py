@@ -2,7 +2,6 @@ from flask import Flask, request, Response, jsonify
 from app.db_manager import DB_Manager
 import boto3, botocore
 import sys
-import json
 
 
 
@@ -186,8 +185,8 @@ return:
 '''
 def build_info(form, mandatory_items, optional_items):
     info = {}
-    json = json.dums(form['patient_info'])
-    sys.stderr.write(json)
+    json = form['patient_info']
+    sys.stderr.write(str(json))
     sys.stderr.write("\n")
     sys.stderr.write(str(type(json)))
     sys.stderr.flush()
