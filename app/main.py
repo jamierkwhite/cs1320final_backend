@@ -65,39 +65,41 @@ def submit_reg():
     reg_info['submitted_by'] = user
 
 
-    headshot = request.files['headshot']
+    
     reg_info["headshot_url"] = None
     reg_info["consent_url"] = None
     reg_info["pcn_consent_url"] = None
-    filename = f'{reg_info["id"]}_headshot.jpg'
-    if headshot.filename != '':
-        try:
-            s3.upload_fileobj(
-                headshot,
-                bucket_name,
-                filename,
-                ExtraArgs={'ACL':'public-read'}
-            )
-            reg_info["headshot_url"] = f'https://rhdbucket.s3.us-east-2.amazonaws.com/{filename}'.jsonat(headshot.filename)
 
-        except Exception as e:
-            print("Error uploading headshot: ", e)
-            return e
-    if 'consent' in request.files:
-        consent = request.files['consent']
-        filename = f'{reg_info["id"]}_consent.jpg'
-        if consent.filename != '':
-            try:
-                s3.upload_fileobj(
-                    consent,
-                    bucket_name,
-                    filename,
-                    ExtraArgs={'ACL':'public-read'}
-                )
+    # headshot = request.files['headshot']
+    # filename = f'{reg_info["id"]}_headshot.jpg'
+    # if headshot.filename != '':
+    #     try:
+    #         s3.upload_fileobj(
+    #             headshot,
+    #             bucket_name,
+    #             filename,
+    #             ExtraArgs={'ACL':'public-read'}
+    #         )
+    #         reg_info["headshot_url"] = f'https://rhdbucket.s3.us-east-2.amazonaws.com/{filename}'.jsonat(headshot.filename)
 
-            except Exception as e:
-                print("Error uploading consent: ", e)
-                return e
+    #     except Exception as e:
+    #         print("Error uploading headshot: ", e)
+    #         return e
+    # if 'consent' in request.files:
+    #     consent = request.files['consent']
+    #     filename = f'{reg_info["id"]}_consent.jpg'
+    #     if consent.filename != '':
+    #         try:
+    #             s3.upload_fileobj(
+    #                 consent,
+    #                 bucket_name,
+    #                 filename,
+    #                 ExtraArgs={'ACL':'public-read'}
+    #             )
+
+    #         except Exception as e:
+    #             print("Error uploading consent: ", e)
+    #             return e
 
     if not db.submit_registration(reg_info):
         return Response(status=500)
@@ -189,7 +191,7 @@ def build_info(form, mandatory_items, optional_items):
     json = json.dumps(form['patient_info'])
     sys.stderr.write(str(json))
     sys.stderr.write("\n")
-    sys.stderr.write(str(type(json))))
+    sys.stderr.write(str(type(json)))
     sys.stderr.flush()
     for item in mandatory_items:
         if item not in json:
