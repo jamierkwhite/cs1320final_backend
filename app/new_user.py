@@ -3,6 +3,10 @@ import os
 import psycopg2
 import hashlib
 
+q = "DROP TABLE registration;"
+cursor.execute(q)
+conn.commit()
+
 DATABASE_URL = os.environ['DATABASE_URL']
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 cursor = conn.cursor()
@@ -20,8 +24,6 @@ hsh = hashlib.sha256(password.encode('utf-8')).hexdigest()
 q = "INSERT INTO users VALUES(%s, %s)"
 cursor.execute(q, (username, hsh))
 
-q = "DROP TABLE registration;"
-cursor.execute(q)
 conn.commit()
 conn.close()
 
