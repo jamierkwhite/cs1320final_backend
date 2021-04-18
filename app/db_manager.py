@@ -131,8 +131,8 @@ class DB_Manager:
                 reg_info["submitted_by"]))
             self.conn.commit()
             return True
-        except Exception:
-            print("Exception occured in db_manager.submit_registration")
+        except Exception as err:
+            print("Exception occured in db_manager.submit_registration: ", err)
             return False
 
 
