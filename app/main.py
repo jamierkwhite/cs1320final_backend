@@ -104,8 +104,8 @@ def submit_reg():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    username = request.form['username']
-    pw = request.form['password']
+    username = request.json['username']
+    pw = request.json['password']
     token, error = db.login(username, pw)
     if error:
         return Response(status=401)
