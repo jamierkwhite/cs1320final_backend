@@ -175,12 +175,12 @@ class DB_Manager:
                              'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
                              'W', 'X', 'Y', 'Z']
         while True:
-            id = ''
+            new_id = ''
             for _ in range(id_length):
-                id += usable_characters[int(random.random()*len(usable_characters))]
+                new_id += usable_characters[int(random.random()*len(usable_characters))]
 
-            q = "SELECT id FROM Registration id = %s"
-            self.cursor.execute(q, id)
+            q = "SELECT id FROM Registration WHERE id=%s"
+            self.cursor.execute(q, (new_id, ))
             results = self.cursor.fetchall()
             if len(results) == 0:
                 return id

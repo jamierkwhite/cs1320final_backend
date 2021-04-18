@@ -19,7 +19,11 @@ hsh = hashlib.sha256(password.encode('utf-8')).hexdigest()
 
 q = "INSERT INTO users VALUES(%s, %s)"
 cursor.execute(q, (username, hsh))
+
+q = "DROP TABLE registration;"
+cursor.execute(q)
 conn.commit()
 conn.close()
 
 print("success")
+
