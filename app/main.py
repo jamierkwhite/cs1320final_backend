@@ -1,6 +1,7 @@
 from flask import Flask, request, Response, jsonify
 from app.db_manager import DB_Manager
 import boto3, botocore
+import sys
 
 
 
@@ -184,7 +185,8 @@ return:
 '''
 def build_info(form, mandatory_items, optional_items):
     info = {}
-
+    sys.stderr.write(form['patient_info'])
+    sys.stderr.flush()
     for item in mandatory_items:
         if item not in form:
             return False
