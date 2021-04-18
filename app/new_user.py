@@ -10,6 +10,12 @@ cursor = conn.cursor()
 
 q = "DROP TABLE registration CASCADE;"
 cursor.execute(q)
+
+q = "DROP TABLE PCN CASCADE;"
+cursor.execute(q)
+
+q = "DROP TABLE screening CASCADE;"
+cursor.execute(q)
 conn.commit()
 
 parser = argparse.ArgumentParser()
