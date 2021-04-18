@@ -18,6 +18,8 @@ password = args.password
 hsh = hashlib.sha256(password.encode('utf-8')).hexdigest()
 
 q = "INSERT INTO users VALUES(%s, %s)"
-cursor.execute(q, username, hsh)
+cursor.execute(q, (username, hsh))
 conn.commit()
 conn.close()
+
+print("success")
