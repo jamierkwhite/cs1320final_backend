@@ -108,6 +108,7 @@ def login():
     pw = request.form['password']
     token, error = db.login(username, pw)
     if error:
+        print("login failed")
         return Response(status=401)
     return jsonify({'token': token.decode('utf-8')})
 
