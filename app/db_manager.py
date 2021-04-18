@@ -21,7 +21,7 @@ class DB_Manager:
         self.cursor = self.conn.cursor()
     
         query = '''CREATE TABLE IF NOT EXISTS Registration(
-            id INT PRIMARY KEY,
+            id TEXT PRIMARY KEY,
             first_name TEXT,
             last_name TEXT,
             birth_date DATE,
@@ -41,7 +41,7 @@ class DB_Manager:
         self.cursor.execute(query)
 
         query = '''CREATE TABLE IF NOT EXISTS Screening(
-            id INT PRIMARY KEY,
+            id TEXT PRIMARY KEY,
             date TIMESTAMP,
             location TEXT,
             am_valve_leaflet_thickness_normality BOOL,
@@ -59,7 +59,7 @@ class DB_Manager:
         self.cursor.execute(query)
 
         query = '''CREATE TABLE IF NOT EXISTS PCN(
-            id INT PRIMARY KEY,
+            id TEXT PRIMARY KEY,
             date TIMESTAMP,
             location TEXT,
             worsening_exercise_intolerance BOOL,
