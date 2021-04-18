@@ -202,6 +202,8 @@ def build_info(form, mandatory_items, optional_items):
     for item in optional_items:
         if item in json_data:
             info[item] = json_data[item]
+        else:
+            info[item] = None
     return info
 
 if __name__ == "__main__":
