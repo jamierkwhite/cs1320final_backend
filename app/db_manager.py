@@ -37,6 +37,9 @@ class DB_Manager:
             mother TEXT,
             care_taker_phone VARCHAR(14),
             alternate_phone VARCHAR(14),
+            headshot_url TEXT,
+            consent_url TEXT,
+            pcn_consene_url TEXT,
             submitted_by TEXT)'''
         self.cursor.execute(query)
 
@@ -90,8 +93,9 @@ class DB_Manager:
         )
         """    
         self.cursor.execute(query)
-
         self.conn.commit()
+
+        
 
 
     '''
@@ -105,7 +109,7 @@ class DB_Manager:
             VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'''
         try:
             self.cursor.execute(query, 
-                reg_info["id"], (
+                (reg_info["id"],
                 reg_info["first_name"],
                 reg_info["last_name"],
                 reg_info["birth_date"],
@@ -183,7 +187,7 @@ class DB_Manager:
             self.cursor.execute(q, (new_id, ))
             results = self.cursor.fetchall()
             if len(results) == 0:
-                return id
+                return new_id
             
     
     def get_patients(self, given_info):
@@ -294,4 +298,4 @@ if __name__ == '__main__':
     db = DB_Manager()
     print(db.login('developer', 'C8FZXqr9bIlMFvL2'))
     
-  
+    

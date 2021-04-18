@@ -1,5 +1,5 @@
 from flask import Flask, request, Response, jsonify
-from app.db_manager import DB_Manager
+from db_manager import DB_Manager
 import boto3, botocore
 
 
@@ -56,38 +56,47 @@ def submit_reg():
              'care_taker_phone',
              'alternate_phone']
 
-    headshot = request.files['headshot']
+    reg_info = build_info(request.form, mandatory_items, optional_items)
+    if not reg_info:
+        return Response(status=402)
+    reg_info['id'] = db.gen_id()
+    reg_info['submitted_by'] = user
 
+
+    headshot = request.files['headshot']
+    reg_info["headshot_url"] = None
+    reg_info["consent_url"] = None
+    reg_info["pcn_consent_url"] = None
+    filename = f'{reg_info["id"]}_headshot.jpg'
     if headshot.filename != '':
         try:
             s3.upload_fileobj(
                 headshot,
                 bucket_name,
-                headshot.filename
+                filename,
+                ExtraArgs={'ACL':'public-read'}
             )
+            reg_info["headshot_url"] = f'https://rhdbucket.s3.us-east-2.amazonaws.com/{filename}'.format(headshot.filename)
 
         except Exception as e:
             print("Error uploading headshot: ", e)
             return e
     if 'consent' in request.files:
         consent = request.files['consent']
+        filename = f'{reg_info["id"]}_consent.jpg'
         if consent.filename != '':
             try:
                 s3.upload_fileobj(
                     consent,
                     bucket_name,
-                    consent.filename
+                    filename,
+                    ExtraArgs={'ACL':'public-read'}
                 )
 
             except Exception as e:
                 print("Error uploading consent: ", e)
                 return e
 
-    reg_info = build_info(request.form, mandatory_items, optional_items)
-    if not reg_info:
-        return Response(status=402)
-    reg_info['id'] = db.gen_id()
-    reg_info['submitted_by'] = user
     if not db.submit_registration(reg_info):
         return Response(status=500)
     return Response(status=200)
@@ -100,7 +109,7 @@ def login():
     token, error = db.login(username, pw)
     if error:
         return Response(status=401)
-    return jsonify({'token': jsonify({'token': token.decode('utf-8')})})
+    return jsonify({'token': token.decode('utf-8')})
 
 
 '''
