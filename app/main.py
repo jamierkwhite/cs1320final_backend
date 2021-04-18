@@ -188,7 +188,8 @@ return:
 '''
 def build_info(form, mandatory_items, optional_items):
     info = {}
-    json_data = json.dumps(form['patient_info'])
+    json_data = json.loads(form['patient_info'])
+    # json_data = form['patient_info']
     sys.stderr.write(str(json_data))
     sys.stderr.write("\n")
     sys.stderr.write(str(type(json_data)))
