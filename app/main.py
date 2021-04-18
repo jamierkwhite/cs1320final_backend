@@ -188,19 +188,19 @@ return:
 '''
 def build_info(form, mandatory_items, optional_items):
     info = {}
-    json = json.dumps(form['patient_info'])
-    sys.stderr.write(str(json))
+    json_data = json.dumps(form['patient_info'])
+    sys.stderr.write(str(json_data))
     sys.stderr.write("\n")
-    sys.stderr.write(str(type(json)))
+    sys.stderr.write(str(type(json_data)))
     sys.stderr.flush()
     for item in mandatory_items:
-        if item not in json:
+        if item not in json_data:
             return False
-        info[item] = json[item]
+        info[item] = json_data[item]
 
     for item in optional_items:
-        if item in json:
-            info[item] = json[item]
+        if item in json_data:
+            info[item] = json_data[item]
     return info
 
 if __name__ == "__main__":
