@@ -222,7 +222,7 @@ class DB_Manager:
     def validate_token(self, token):
         is_valid = False
         userID = ""
-        q = "SELECT * FROM sessions WHERE sessionID=?"
+        q = "SELECT * FROM sessions WHERE sessionID=%s"
         try:
             hashed_token = get_hashed_token(token)
             self.cursor.execute(q, (hashed_token,))
@@ -291,5 +291,6 @@ def get_hashed_token(token):
 
 if __name__ == '__main__':
     db = DB_Manager()
+    print(db.login('developer', 'C8FZXqr9bIlMFvL2'))
     
-    
+  

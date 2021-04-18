@@ -1,5 +1,5 @@
 from flask import Flask, request, Response, jsonify
-from app.db_manager import DB_Manager
+from db_manager import DB_Manager
 import boto3, botocore
 
 
@@ -33,11 +33,11 @@ required: first_name
           alternate_phone
 returns: a new generated id
 '''
-@app.route('/register', methods=['POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def submit_reg():
     bucket_name = 'rhdbucket'
     token = request.form['token']
-    valid, user = db.validate_tokenverify_token(token)
+    valid, user = db.validate_token(token)
     if not valid:
         return Response(status=401)
     mandatory_items = ['first_name', 'last_name']
@@ -69,18 +69,19 @@ def submit_reg():
         except Exception as e:
             print("Error uploading headshot: ", e)
             return e
-    consent = request.files['consent']
-    if consent.filename != '':
-        try:
-            s3.upload_fileobj(
-                consent,
-                bucket_name,
-                consent.filename
-            )
+    if 'consent' in request.files:
+        consent = request.files['consent']
+        if consent.filename != '':
+            try:
+                s3.upload_fileobj(
+                    consent,
+                    bucket_name,
+                    consent.filename
+                )
 
-        except Exception as e:
-            print("Error uploading consent: ", e)
-            return e
+            except Exception as e:
+                print("Error uploading consent: ", e)
+                return e
 
     reg_info = build_info(request.form, mandatory_items, optional_items)
     if not reg_info:
@@ -92,14 +93,14 @@ def submit_reg():
     return Response(status=200)
     
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     username = request.form['username']
     pw = request.form['password']
     token, error = db.login(username, pw)
     if error:
         return Response(status=401)
-    return jsonify({'token': token})
+    return jsonify({'token': str(token)})
 
 
 '''
@@ -118,7 +119,7 @@ required: id
           aortic_regurgitation
           comments
 '''
-@app.route('/screening_echo', methods=['POST'])
+@app.route('/screening_echo', methods=['GET', 'POST'])
 def submit_screening_echo():
     token = request.form['token']
     valid, user = db.validate_tokenverify_token(token)
@@ -155,7 +156,7 @@ def submit_screening_questions():
     return Response(status=501)
 
 
-@app.route('/find_patients', methods=['POST'])
+@app.route('/find_patients', methods=['GET', 'POST'])
 def find_patient():
     given_items = request.form
     found = db.get_patients(given_items)
