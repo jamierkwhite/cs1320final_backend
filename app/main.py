@@ -187,6 +187,8 @@ def build_info(form, mandatory_items, optional_items):
     info = {}
     json = form['patient_info']
     sys.stderr.write(json)
+    sys.stderr.write("\n")
+    sys.stderr.write(type(json))
     sys.stderr.flush()
     for item in mandatory_items:
         if item not in json:
