@@ -39,7 +39,7 @@ class DB_Manager:
             alternate_phone VARCHAR(14),
             headshot_url TEXT,
             consent_url TEXT,
-            pcn_consene_url TEXT,
+            pcn_consent_url TEXT,
             submitted_by TEXT)'''
         self.cursor.execute(query)
 

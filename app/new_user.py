@@ -4,10 +4,20 @@ import psycopg2
 import hashlib
 
 
-
 DATABASE_URL = os.environ['DATABASE_URL']
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 cursor = conn.cursor()
+
+q = "DROP TABLE registration CASCADE;"
+cursor.execute(q)
+
+q = "DROP TABLE screening CASCADE;"
+cursor.execute(q)
+
+q = "DROP TABLE cascade CASCADE;"
+cursor.execute(q)
+
+conn.commit()
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--username', required=True)
