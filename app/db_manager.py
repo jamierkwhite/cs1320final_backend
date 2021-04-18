@@ -3,7 +3,7 @@ import os
 import random
 import hashlib
 import datetime
-import bcrypt
+import hashlib
 import base64
 
 '''
@@ -249,14 +249,15 @@ class DB_Manager:
     def login(self, userID, password):
         error = ""
         token = ""
-        q = "SELECT userID,pwHash FROM users WHERE userID=?"
+        q = "SELECT userID,pwHash FROM users WHERE userID=%s"
         try:
             self.cursor.execute(q, (userID,))
             result = self.cursor.fetchone()
             if (result == None):
                 return token, "Could not find your Dropbox account."
+            processed_pw = hashlib.sha256(password.encode('utf-8')).hexdigest()
             pwHash = result[1]
-            if bcrypt.checkpw(password.encode("utf-8"), pwHash):
+            if processed_pw == pwHash:
                 # generate a new sessionID token - see README for citation
                 token = base64.b64encode(os.urandom(16))
                 # hash the token before storing it in the db
@@ -265,7 +266,7 @@ class DB_Manager:
                 # see README for citation
                 now = datetime.datetime.now()
                 now_plus_30 = str(now + datetime.timedelta(minutes=240))
-                q = "INSERT INTO sessions (sessionID, userID, expiration) VALUES(?,?,?)"
+                q = "INSERT INTO sessions (sessionID, userID, expiration) VALUES(%s,%s,%s)"
                 self.cursor.execute(q, (sessionID, userID, now_plus_30))
                 self.conn.commit()
             else:
