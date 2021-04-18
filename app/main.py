@@ -2,6 +2,7 @@ from flask import Flask, request, Response, jsonify
 from app.db_manager import DB_Manager
 import boto3, botocore
 import sys
+import json
 
 
 
@@ -185,10 +186,10 @@ return:
 '''
 def build_info(form, mandatory_items, optional_items):
     info = {}
-    json = form['patient_info']
+    json = json.dumps(form['patient_info'])
     sys.stderr.write(str(json))
     sys.stderr.write("\n")
-    sys.stderr.write(str(type(json)))
+    sys.stderr.write(str(type(json))))
     sys.stderr.flush()
     for item in mandatory_items:
         if item not in json:
