@@ -185,15 +185,17 @@ return:
 '''
 def build_info(form, mandatory_items, optional_items):
     info = {}
+    sys.stderr.write("form[patient_info]:")
     sys.stderr.write(form['patient_info'])
+    sys.stderr.write("\n")
     sys.stderr.flush()
     for item in mandatory_items:
-        if item not in form:
+        if item not in form['patient_info']:
             return False
         info[item] = form['patient_info'][item]
 
     for item in optional_items:
-        if item in form:
+        if item in form['patient_info']:
             info[item] = form['patient_info'][item]
     return info
 
