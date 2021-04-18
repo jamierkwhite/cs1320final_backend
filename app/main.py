@@ -36,7 +36,7 @@ returns: a new generated id
 @app.route('/register', methods=['GET', 'POST'])
 def submit_reg():
     bucket_name = 'rhdbucket'
-    token = request.form['token']
+    token = request.json['token']
     valid, user = db.validate_token(token)
     if not valid:
         return Response(status=401)
@@ -56,7 +56,7 @@ def submit_reg():
              'care_taker_phone',
              'alternate_phone']
 
-    reg_info = build_info(request.form, mandatory_items, optional_items)
+    reg_info = build_info(request.json, mandatory_items, optional_items)
     if not reg_info:
         return Response(status=402)
     reg_info['id'] = db.gen_id()
@@ -76,7 +76,7 @@ def submit_reg():
                 filename,
                 ExtraArgs={'ACL':'public-read'}
             )
-            reg_info["headshot_url"] = f'https://rhdbucket.s3.us-east-2.amazonaws.com/{filename}'.format(headshot.filename)
+            reg_info["headshot_url"] = f'https://rhdbucket.s3.us-east-2.amazonaws.com/{filename}'.jsonat(headshot.filename)
 
         except Exception as e:
             print("Error uploading headshot: ", e)
@@ -130,7 +130,7 @@ required: id
 '''
 @app.route('/screening_echo', methods=['GET', 'POST'])
 def submit_screening_echo():
-    token = request.form['token']
+    token = request.json['token']
     valid, user = db.validate_tokenverify_token(token)
     if not valid:
         return Response(status=401)
@@ -148,7 +148,7 @@ def submit_screening_echo():
                         'aortic_regurgitation']
     optional_items = ['comments']
              
-    reg_info = build_info(request.form, mandatory_items, optional_items)
+    reg_info = build_info(request.json, mandatory_items, optional_items)
     if not reg_info:
         return Response(status=402)
     reg_info['submitted_by'] = user
@@ -167,7 +167,7 @@ def submit_screening_questions():
 
 @app.route('/find_patients', methods=['GET', 'POST'])
 def find_patient():
-    given_items = request.form
+    given_items = request.json
     found = db.get_patients(given_items)
     if found:
         return jsonify(found)
@@ -176,7 +176,7 @@ def find_patient():
 '''
 verify that needed items are in a request and build an item for db
 params:
-    form: request.form
+    form: request.json
     mandatory_items: items that must be present (list<string>)
     optional_items: items that aren't needed (list<string>)
 return:
