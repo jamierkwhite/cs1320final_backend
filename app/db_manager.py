@@ -5,6 +5,7 @@ import hashlib
 import datetime
 import hashlib
 import base64
+import sys
 
 '''
 Class to interface with the database
@@ -241,6 +242,10 @@ class DB_Manager:
                     results = self.cursor.fetchall()
                 else:
                     results = results.intersection(self.cursor.fetchall())
+                sys.stderr.write("results: ")
+                sys.stderr.write(str(results))
+                sys.stderr.write("\n")
+                sys.stderr.flush()
 
                 if len(results) <= 5 and len(results) > 0:
                     return results
