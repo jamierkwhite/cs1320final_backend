@@ -239,7 +239,8 @@ class DB_Manager:
                 sys.stderr.write("(k, v) ")
                 sys.stderr.write(f'({key}, {val})')
                 sys.stderr.write("\n")
-                query = 'SELECT * FROM registration WHERE %s=%s;'
+                # query = 'SELECT * FROM registration WHERE %s=%s;'
+                query = "SELECT * FROM registration WHERE id='8XE21C2';"
                 self.cursor.execute(query, (key, val))
                 if results == None:
                     results = self.cursor.fetchall()
