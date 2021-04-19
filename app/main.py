@@ -201,6 +201,79 @@ def find_patient():
         return jsonify(found)
     return Response(status=404)
 
+
+@app.route('/add_headshot', methods=['GET', 'POST'])
+def add_headshot():
+    data = request.json
+    if 'id' not in data or 'headshot' not in request.files:
+        return Response(status=401)
+    id = data['id']
+    headshot = request.files['headshot']
+    filename = f'{id}_headshot.jpg'
+    if headshot.filename != '':
+        try:
+            s3.upload_fileobj(
+                headshot,
+                'rhdbucket',
+                filename,
+                ExtraArgs={'ACL':'public-read'}
+            )
+            url = f'https://rhdbucket.s3.us-east-2.amazonaws.com/{filename}'
+            db.add_headshot(id, url)
+
+        except Exception as e:
+            print("Error uploading headshot: ", e)
+            return e
+
+
+@app.route('/add_consent', methods=['GET', 'POST'])
+def add_consent():
+    data = request.json
+    if 'id' not in data or 'consent' not in request.files:
+        return Response(status=401)
+    id = data['id']
+    consent = request.files['consent']
+    filename = f'{id}_consent.jpg'
+    if consent.filename != '':
+        try:
+            s3.upload_fileobj(
+                consent,
+                'rhdbucket',
+                filename,
+                ExtraArgs={'ACL':'public-read'}
+            )
+            url = f'https://rhdbucket.s3.us-east-2.amazonaws.com/{filename}'
+            db.add_consent(id, url)
+
+        except Exception as e:
+            print("Error uploading consent: ", e)
+            return e
+
+
+@app.route('/add_pcn_consent', methods=['GET', 'POST'])
+def add_pcn_consent():
+    data = request.json
+    if 'id' not in data or 'pcn_consent' not in request.files:
+        return Response(status=401)
+    id = data['id']
+    pcn_consent = request.files['pcn_consent']
+    filename = f'{id}_pcn_consent.jpg'
+    if pcn_consent.filename != '':
+        try:
+            s3.upload_fileobj(
+                pcn_consent,
+                'rhdbucket',
+                filename,
+                ExtraArgs={'ACL':'public-read'}
+            )
+            url = f'https://rhdbucket.s3.us-east-2.amazonaws.com/{filename}'
+            db.add__pcn_consent(id, url)
+
+        except Exception as e:
+            print("Error uploading ocn consent: ", e)
+            return e
+
+
 '''
 verify that needed items are in a request and build an item for db
 params:

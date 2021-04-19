@@ -317,6 +317,23 @@ class DB_Manager:
         return token, error
 
 
+
+    def add_headshot(self, id, url):
+        q  = 'UPDATE registration SET headshot_url=%s WHERE id=%s;'
+        self.cursor.execute(q, (url, id))
+        self.conn.commit()
+
+    def add_consent(self, id, url):
+        q  = 'UPDATE registration SET consent_url=%s WHERE id=%s;'
+        self.cursor.execute(q, (url, id))
+        self.conn.commit()
+
+    def add_pcr_consent(self, id, url):
+        q  = 'UPDATE registration SET pcn_consent_url=%s WHERE id=%s;'
+        self.cursor.execute(q, (url, id))
+        self.conn.commit()
+
+
     def close(self):
         self.conn.close()
 
