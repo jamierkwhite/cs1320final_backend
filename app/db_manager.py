@@ -230,14 +230,18 @@ class DB_Manager:
             'consent_url',
             'pcn_consent_url']
 
-        results = set()
+        results = None
 
         for key in fields:
             if key in given_info:
                 val = given_info[key]
-                query = 'SELECT FROM registration WHERE %s=%s'
-                self.cursor.execute(query, (key, val)) 
-                results = results.intersection(self.cursor.fetchall())
+                query = 'SELECT FROM registration WHERE %s=%s;'
+                self.cursor.execute(query, (key, val))
+                if results == None:
+                    results = self.cursor.fetchall()
+                else:
+                    results = results.intersection(self.cursor.fetchall())
+
                 if len(results) <= 5 and len(results) > 0:
                     return results
         return False
