@@ -236,18 +236,19 @@ class DB_Manager:
         for key in fields:
             if key in given_info:
                 val = given_info[key]
+                sys.stderr.write("(k, v) ")
+                sys.stderr.write(f'({key}, {val})')
+                sys.stderr.write("\n")
                 query = 'SELECT * FROM registration WHERE %s=%s;'
-                k = self.cursor.execute(query, (key, val))
+                self.cursor.execute(query, (key, val))
                 if results == None:
                     results = self.cursor.fetchall()
-                    sys.stderr.write("k ")
-                    sys.stderr.write(str(k))
                     sys.stderr.write("fetchall ")
                     sys.stderr.write(str(results))
                     sys.stderr.write("\n")
                     results = set(results)
                 else:
-                    results = results.intersection(self.cursor.fetchall())
+                    results = results.intersection(set(self.cursor.fetchall()))
                 sys.stderr.write("results: ")
                 sys.stderr.write(str(results))
                 sys.stderr.write("\n")
