@@ -160,6 +160,30 @@ def submit_screening_echo():
         return Response(status=500)
     return Response(status=200)
 
+
+@app.route('/submit_PCN', methods=['GET', 'POST'])
+def submit_PCN():
+    token = request.json['token']
+    valid, user = db.validate_tokenverify_token(token)
+    if not valid:
+        return Response(status=401)
+    mandatory_items = [ 'id',
+                        'date',
+                        'location',
+                        'worsening_exercise_intolerance',
+                        'poor_pcn_reaction',
+                        'injection_given']
+    optional_items = ['comments']
+             
+    reg_info = build_info(request.json, mandatory_items, optional_items)
+    if not reg_info:
+        return Response(status=402)
+    reg_info['submitted_by'] = user
+    if not db.submit_screening_echo(reg_info):
+        return Response(status=500)
+    return Response(status=200)
+
+
 @app.route('/favicon.ico', methods=['GET'])
 def icon():
     return Response(status=404)

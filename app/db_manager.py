@@ -43,7 +43,7 @@ class DB_Manager:
             submitted_by TEXT)'''
         self.cursor.execute(query)
 
-        query = '''CREATE TABLE IF NOT EXISTS Screening(
+        query = '''CREATE TABLE IF NOT EXISTS screening(
             id TEXT PRIMARY KEY,
             date TIMESTAMP,
             location TEXT,
@@ -143,7 +143,7 @@ class DB_Manager:
     return: boolean for success
     '''
     def submit_screening_echo(self, screening_echo):
-        query = '''INSERT INTO Registration
+        query = '''INSERT INTO screening
             VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'''
         try:
             self.cursor.execute(query, 
@@ -168,6 +168,25 @@ class DB_Manager:
             return False
 
 
+    def submit_PCN(self, pcn_info):
+        query = '''INSERT INTO PCN
+            VALUES(%s, %s, %s, %s, %s, %s, %s, %s)'''
+        try:
+            self.cursor.execute(query, 
+                (pcn_info['id'],
+                 pcn_info['date'],
+                 pcn_info['location'],
+                 pcn_info['worsening_exercise_intolerance'],
+                 pcn_info['poor_pcn_reaction'],
+                 pcn_info['injection_given'],
+                 pcn_info['comments'],
+                 pcn_info['submitted_by']))
+            self.conn.commit()
+            return True
+        except Exception:
+            print("Exception occured in db_manager.submit_screening_echo")
+            return False
+            
     
     '''
     create a new ID to be used in the database
@@ -217,7 +236,7 @@ class DB_Manager:
             if key in given_info:
                 val = given_info[key]
                 query = 'SELECT FROM registration WHERE %s=%s'
-                self.cursor.execute(query, key, val) 
+                self.cursor.execute(query, (key, val)) 
                 results = results.intersection(self.cursor.fetchall())
                 if len(results) <= 5 and len(results) > 0:
                     return results
