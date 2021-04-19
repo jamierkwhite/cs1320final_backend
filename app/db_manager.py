@@ -240,8 +240,8 @@ class DB_Manager:
                 sys.stderr.write(f'({key}, {val})')
                 sys.stderr.write("\n")
                 # query = 'SELECT * FROM registration WHERE %s=%s;'
-                query = "SELECT * FROM registration WHERE id='8XE21C2';"
-                self.cursor.execute(query, (key, val))
+                query = f'SELECT * FROM registration WHERE {key}=%s;'
+                self.cursor.execute(query, (val, ))
                 if results == None:
                     results = self.cursor.fetchall()
                     sys.stderr.write("fetchall ")
@@ -256,7 +256,7 @@ class DB_Manager:
                 sys.stderr.flush()
 
                 if len(results) <= 5 and len(results) > 0:
-                    return results
+                    return list(results)
         return False
     
     
