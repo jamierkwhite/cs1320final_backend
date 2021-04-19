@@ -211,52 +211,52 @@ class DB_Manager:
             
     
     def get_patients(self, given_info):
-        fields = [
-            'id',
-            'first_name',
-            'birth_date',
-            'age',
-            'school_name',
-            'standard',
-            'village',
-            'sub_county',
-            'church',
-            'childrens_Home',
-            'care_taker',
-            'father',
-            'mother',
-            'care_taker_phone',
-            'alternate_phone',
-            'headshot_url',
-            'consent_url',
-            'pcn_consent_url']
+        fields = ['id',
+        'first_name',
+        'last_name',
+        'birth_date',
+        'age',
+        'school_name',
+        'standard',
+        'village',
+        'sub_county',
+        'church',
+        'childrens_Home',
+        'care_taker',
+        'father',
+        'mother',
+        'care_taker_phone',
+        'alternate_phone',
+        'headshot_url',
+        'consent_url',
+        'pcn_consent_url',
+        'submitted_by']
+
 
         results = None
 
         for key in fields:
             if key in given_info:
                 val = given_info[key]
-                sys.stderr.write("(k, v) ")
-                sys.stderr.write(f'({key}, {val})')
-                sys.stderr.write("\n")
-                # query = 'SELECT * FROM registration WHERE %s=%s;'
+                #not an injection risk since key comes from a predifined and non-user accessible list
                 query = f'SELECT * FROM registration WHERE {key}=%s;'
                 self.cursor.execute(query, (val, ))
                 if results == None:
                     results = self.cursor.fetchall()
-                    sys.stderr.write("fetchall ")
-                    sys.stderr.write(str(results))
-                    sys.stderr.write("\n")
+
                     results = set(results)
                 else:
                     results = results.intersection(set(self.cursor.fetchall()))
-                sys.stderr.write("results: ")
-                sys.stderr.write(str(results))
-                sys.stderr.write("\n")
-                sys.stderr.flush()
 
                 if len(results) <= 5 and len(results) > 0:
-                    return list(results)
+                    obj_results = []
+                    for item in list(results):
+                        obj = {}
+                        for idx in range(len(fields)):
+                            obj[fields[idx]] = item[idx]
+                        obj_results.append(obj)
+                    return obj_results
+
         return False
     
     
