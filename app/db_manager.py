@@ -237,9 +237,11 @@ class DB_Manager:
             if key in given_info:
                 val = given_info[key]
                 query = 'SELECT * FROM registration WHERE %s=%s;'
-                self.cursor.execute(query, (key, val))
+                k = self.cursor.execute(query, (key, val))
                 if results == None:
                     results = self.cursor.fetchall()
+                    sys.stderr.write("k ")
+                    sys.stderr.write(str(k))
                     sys.stderr.write("fetchall ")
                     sys.stderr.write(str(results))
                     sys.stderr.write("\n")
