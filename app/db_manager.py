@@ -164,8 +164,8 @@ class DB_Manager:
                  screening_echo['submitted_by']))
             self.conn.commit()
             return True
-        except Exception:
-            print("Exception occured in db_manager.submit_screening_echo")
+        except Exception as e:
+            sys.stderr.write(f'Exception occured in db_manager.submit_screening_echo: {e}')
             return False
 
 
