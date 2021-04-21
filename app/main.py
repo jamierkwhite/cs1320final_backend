@@ -143,14 +143,14 @@ def submit_screening_echo():
                         'location',
                         'am_valve_leaflet_thickness_normality',
                         'pm_valve_leaflet_thickness_normality',
-                        'pm_valve_mobility_normality',
+                        'pm_valve_mobility_normality'
+                        'am_valve_mobility_normality',
                         'a_valve_thickness_normality',
                         'm_valve_function_normality',
-                        'a_valve_function_normality',
-                        'am_valve_leaflet_mobility_normality',
-                        'mitral_regurgitation',
-                        'aortic_regurgitation']
-    optional_items = ['comments']
+                        'a_valve_function_normality']
+    optional_items = ['comments', 
+                      'mitral_regurgitation',
+                      'aortic_regurgitation']
              
     reg_info = build_info(request.json, mandatory_items, optional_items)
     if not reg_info:
@@ -188,7 +188,9 @@ def submit_PCN():
 def icon():
     return Response(status=404)
 
-
+# We were never given these questions by the hospital
+# But stubbed out a route nonetheless so that it could be implemented
+# when those questions are ready
 def submit_screening_questions():
     return Response(status=501)
 
