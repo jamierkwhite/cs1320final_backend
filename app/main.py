@@ -179,7 +179,7 @@ def submit_PCN():
     if not reg_info:
         return Response(status=402)
     reg_info['submitted_by'] = user
-    if not db.submit_pcn(reg_info):
+    if not db.submit_PCN(reg_info):
         return Response(status=500)
     return Response(status=200)
 
