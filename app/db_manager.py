@@ -46,7 +46,7 @@ class DB_Manager:
         self.cursor.execute(query)
 
         query = '''CREATE TABLE IF NOT EXISTS screening(
-            id TEXT PRIMARY KEY,
+            id TEXT,
             date TIMESTAMP,
             location TEXT,
             pm_valve_leaflet_thickness_normality VARCHAR(10),
@@ -60,11 +60,12 @@ class DB_Manager:
             aortic_regurgitation VARCHAR(10),
             comments TEXT,
             submitted_by TEXT,
+            PRIMARY KEY (id, date),
             FOREIGN KEY (id) REFERENCES Registration(id))'''
         self.cursor.execute(query)
 
         query = '''CREATE TABLE IF NOT EXISTS PCN(
-            id TEXT PRIMARY KEY,
+            id TEXT,
             date TIMESTAMP,
             location TEXT,
             worsening_exercise_intolerance BOOL,
@@ -72,6 +73,7 @@ class DB_Manager:
             injection_given BOOL,
             comments TEXT,
             submitted_by TEXT,
+            PRIMARY KEY (id, date),
             FOREIGN KEY (id) REFERENCES Registration(id))'''        
         self.cursor.execute(query)
 
@@ -186,7 +188,8 @@ class DB_Manager:
             self.conn.commit()
             return True
         except Exception:
-            print("Exception occured in db_manager.submit_screening_echo")
+            
+            print("Exception occured in db_manager.submit_pcn")
             return False
             
     
