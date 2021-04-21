@@ -135,7 +135,7 @@ required: id
 @app.route('/screening_echo', methods=['GET', 'POST'])
 def submit_screening_echo():
     token = request.json['token']
-    valid, user = db.validate_tokenverify_token(token)
+    valid, user = db.validate_token(token)
     if not valid:
         return Response(status=401)
     mandatory_items = [ 'id',
@@ -164,7 +164,7 @@ def submit_screening_echo():
 @app.route('/submit_PCN', methods=['GET', 'POST'])
 def submit_PCN():
     token = request.json['token']
-    valid, user = db.validate_tokenverify_token(token)
+    valid, user = db.validate_token(token)
     if not valid:
         return Response(status=401)
     mandatory_items = [ 'id',
