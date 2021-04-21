@@ -8,9 +8,6 @@ DATABASE_URL = os.environ['DATABASE_URL']
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 cursor = conn.cursor()
 
-cursor.execute('DROP TABLE screening CASCADE;')
-conn.commit()
-exit()
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--username', required=True)
