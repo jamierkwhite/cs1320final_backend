@@ -292,6 +292,7 @@ def build_info(form, mandatory_items, optional_items):
 
     for item in mandatory_items:
         if item not in json_data:
+            sys.stderr.write(f'missing item: {item}')
             return False
         info[item] = json_data[item]
 
