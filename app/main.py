@@ -143,7 +143,7 @@ def submit_screening_echo():
                         'location',
                         'am_valve_leaflet_thickness_normality',
                         'pm_valve_leaflet_thickness_normality',
-                        'pm_valve_mobility_normality'
+                        'pm_valve_mobility_normality',
                         'am_valve_mobility_normality',
                         'a_valve_thickness_normality',
                         'm_valve_function_normality',
@@ -296,7 +296,7 @@ def build_info(form, mandatory_items, optional_items):
 
     for item in mandatory_items:
         if item not in json_data:
-            sys.stderr.write(f'missing item: {item}')
+            sys.stderr.write(f'missing item: {item}\n')
             return False
         info[item] = json_data[item]
 
