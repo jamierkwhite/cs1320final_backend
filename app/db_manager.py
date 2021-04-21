@@ -190,6 +190,7 @@ class DB_Manager:
         except Exception as e:
             
             print(f'Exception occured in db_manager.submit_pcn: {e}')
+            raise e
             return False
             
     
