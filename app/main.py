@@ -287,8 +287,12 @@ return:
 '''
 def build_info(form, mandatory_items, optional_items):
     info = {}
-    json_data = json.loads(form['patient_info'])
-    # json_data = form['patient_info']
+    json_data = None
+    try:
+        json_data = json.loads(form['patient_info'])
+    except Exception:
+        sys.stderr.write('error in data format, trying again\n')
+        json_data = form['patient_info']
 
     for item in mandatory_items:
         if item not in json_data:
