@@ -187,9 +187,9 @@ class DB_Manager:
                  pcn_info['submitted_by']))
             self.conn.commit()
             return True
-        except Exception:
+        except Exception as e:
             
-            print("Exception occured in db_manager.submit_pcn")
+            print(f'Exception occured in db_manager.submit_pcn: {e}')
             return False
             
     
