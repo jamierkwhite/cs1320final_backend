@@ -6,6 +6,7 @@ import datetime
 import hashlib
 import base64
 import sys
+import traceback
 
 '''
 Class to interface with the database
@@ -157,7 +158,6 @@ class DB_Manager:
                  screening_echo['a_valve_thickness_normality'],
                  screening_echo['m_valve_function_normality'],
                  screening_echo['a_valve_function_normality'],
-                 screening_echo['am_valve_leaflet_mobility_normality'],
                  screening_echo['mitral_regurgitation'],
                  screening_echo['aortic_regurgitation'],
                  screening_echo['comments'],
@@ -165,7 +165,8 @@ class DB_Manager:
             self.conn.commit()
             return True
         except Exception as e:
-            sys.stderr.write(f'Exception occured in db_manager.submit_screening_echo: {e}')
+            sys.stderr.write(f'Exception occured in db_manager.submit_screening_echo: {e}\n')
+            traceback.print_exc()
             return False
 
 
